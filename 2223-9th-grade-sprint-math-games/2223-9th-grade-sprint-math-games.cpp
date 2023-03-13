@@ -4,20 +4,18 @@
 
 using namespace std;
 
-#define MAX_HEALTH_POINTS 100; 
-
 typedef struct Player {
     float x;
     float y;
-    float width; 
-    float Health;
+    int Health;
 }Player;
 
 typedef struct Enemy {
     float x;
     float y;
-    float EnemyHealth;
+    int EnemyHealth;
 }Enemy;
+
 
 int main()
 {
@@ -27,71 +25,75 @@ int main()
     const int screenHeight = 580;
 
     static Player player;
+    static Enemy enemy;
 
-    player.width = 20;
     player.x = -100;
-    player.y = 320;
+    player.y = 340;
+    enemy.x = 310;
+    enemy.y = 155;
 
-    //int MaxCircleEnemyHP = 100;
-    //int CircleEnemyHP = 100;
-    //int MaxCircleHP = 100;
-    //int CircleHP = 100;
+    bool collision = false;
+    bool HasHit = false;
 
-    //string inputString;
 
     InitWindow(screenWidth, screenHeight, "CodeCutters");
 
     Font font = LoadFont("resources/TiltWarp-Regular-VariableFont_XROT,YROT.ttf");
 
-    Image image = LoadImage("resources/background.png");
-    Texture2D texture = LoadTextureFromImage(image);          // Image converted to texture, GPU memory (VRAM)
+    static Image image = LoadImage("resources/background.png");
+    static Texture2D texture = LoadTextureFromImage(image);          // Image converted to texture, GPU memory (VRAM)
     UnloadImage(image);   // Once image has been converted to texture and uploaded to VRAM, it can be unloaded from RAM
 
-    Texture2D character = LoadTexture("resources/character1.png");
+    static Texture2D player1 = LoadTexture("resources/character1.png");
+    static Texture2D enemy1 = LoadTexture("resources/enemy.png");
+
+    
+    
 
     SetTargetFPS(60);     // Set our game to run at 60 frames-per-second
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        if (IsKeyDown(KEY_RIGHT)) player.x += 3;
-        if (IsKeyDown(KEY_LEFT)) player.x -= 3;
-
+        Rectangle playerRec = { player.x, player.y, float(player1.width), float(player1.height) };
+        Rectangle enemyRec = { 750, 400, float(enemy1.width), float(enemy1.height) };
 
         if (player.x <= -115)
             player.x = -115;
         if (player.x >= 715)
             player.x = 715;
 
-        /*collision = CheckCollisionCircles(Circle, 20, CircleEnemy, 20);*/
+        collision = CheckCollisionRecs(playerRec, enemyRec);
 
         // Draw
         BeginDrawing();
 
         DrawTexture(texture, screenWidth / 2 - texture.width / 2, screenHeight / 2 - texture.height / 2, WHITE);
-        DrawTexture(character, player.x, player.y, WHITE);
+        DrawTexture(player1, player.x, player.y, WHITE);
+        DrawTexture(enemy1, enemy.x, enemy.y, WHITE);
+        
 
-        //if (collision == true) {
-        //    HasHit = true;
-        //}
-        //if (HasHit) {
-        //    player.x = 520;
+        if (collision) {
+            HasHit = true;
+        }
+        if (HasHit) {
+            player.x = 400;
+            player.Health = 100;
+            enemy.EnemyHealth = 100;
 
-        //    DrawRectangle(Circle.x - 30, Circle.y - 44, 70, 20, GRAY);
-        //    DrawRectangle(Circle.x - 30, Circle.y - 44, (70 * CircleHP) / MaxCircleHP, 20, GREEN);
-        //    DrawTextEx(font, to_string(CircleHP).c_str(), Vector2{ Circle.x - 10, Circle.y - 44 }, 20, 0, BLACK);
+            DrawRectangle(player.x + 115, player.y + 30, 70, 20, GRAY);
+            DrawRectangle(player.x + 115, player.y + 30, (70 * player.Health) / 100, 20, GREEN);
+            DrawTextEx(font, to_string(player.Health).c_str(), Vector2{ player.x + 135, player.y + 30 }, 20, 0, BLACK);
 
-        //    DrawRectangle(CircleEnemy.x - 30, CircleEnemy.y - 44, 70, 20, GRAY);
-        //    DrawRectangle(CircleEnemy.x - 30, CircleEnemy.y - 44, (70 * CircleEnemyHP) / MaxCircleEnemyHP, 20, GREEN);
-        //    DrawTextEx(font, to_string(CircleEnemyHP).c_str(), Vector2{ CircleEnemy.x - 10, CircleEnemy.y - 44 }, 20, 0, BLACK);
+            DrawRectangle(enemy.x + 360, enemy.y + 100, 70, 20, GRAY);
+            DrawRectangle(enemy.x + 315, enemy.y + 100, (130 * enemy.EnemyHealth) / 100, 22, GREEN);
+            DrawTextEx(font, to_string(enemy.EnemyHealth).c_str(), Vector2{ enemy.x + 362, enemy.y + 98 }, 25, 0, BLACK);
+        }
 
-        //    DrawText(inputString.c_str(), 50, 50, 20, BLACK);
-
-        //}
-
-        //else if (!collision) {
-            
-        //}
+        else if (!collision) {
+            if (IsKeyDown('D')) player.x += 25;
+            if (IsKeyDown('A')) player.x -= 3;
+        }
 
 
         EndDrawing();
