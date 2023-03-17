@@ -16,6 +16,11 @@ typedef struct Enemy {
     int EnemyHealth;
 }Enemy;
 
+void randomise(int number1, int number2) {
+    number1 = GetRandomValue(1, 15);
+    number2 = GetRandomValue(1, 15);
+}
+
 static int MAX_HEALTH_POINTS = 100;
 
 int main()
@@ -40,6 +45,8 @@ int main()
     int number_2 = GetRandomValue(1, 15);
 
     string question = "What's " + to_string(number_1) + " << " + to_string(number_2) + "?";
+    string buttonPress = "Press K to type. To submit press ENTER";
+    string answer;
 
     InitWindow(screenWidth, screenHeight, "CodeCutters");
 
@@ -94,7 +101,13 @@ int main()
             DrawRectangle(enemy.x + 315, enemy.y + 100, (130 * enemy.EnemyHealth) / MAX_HEALTH_POINTS, 22, GREEN);
             DrawTextEx(font, to_string(enemy.EnemyHealth).c_str(), Vector2{ enemy.x + 362, enemy.y + 98 }, 25, 0, BLACK);
 
-            DrawTextEx(font, question.c_str(), Vector2{200, 280}, 38, 1, WHITE);
+            DrawTextEx(font, question.c_str(), Vector2{ 100, 190 }, 38, 1, WHITE);
+            DrawTextEx(font, buttonPress.c_str(), Vector2{ 70, 150 }, 35, 1, WHITE);
+            DrawTextEx(font, answer.c_str(), Vector2{ 120, 210 }, 40, 1, WHITE);
+
+            if (IsKeyPressed('K')) {
+                cin >> answer;
+            }
         }
 
         else if (!collision) {
