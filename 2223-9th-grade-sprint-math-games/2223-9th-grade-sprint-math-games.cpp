@@ -16,6 +16,7 @@ typedef struct Enemy {
     int EnemyHealth;
 }Enemy;
 
+static int MAX_HEALTH_POINTS = 100;
 
 int main()
 {
@@ -35,6 +36,10 @@ int main()
     bool collision = false;
     bool HasHit = false;
 
+    int number_1 = GetRandomValue(1, 15);
+    int number_2 = GetRandomValue(1, 15);
+
+    string question = "What's " + to_string(number_1) + " << " + to_string(number_2) + "?";
 
     InitWindow(screenWidth, screenHeight, "CodeCutters");
 
@@ -82,17 +87,19 @@ int main()
             enemy.EnemyHealth = 100;
 
             DrawRectangle(player.x + 115, player.y + 30, 70, 20, GRAY);
-            DrawRectangle(player.x + 115, player.y + 30, (70 * player.Health) / 100, 20, GREEN);
+            DrawRectangle(player.x + 115, player.y + 30, (70 * player.Health) / MAX_HEALTH_POINTS, 20, GREEN);
             DrawTextEx(font, to_string(player.Health).c_str(), Vector2{ player.x + 135, player.y + 30 }, 20, 0, BLACK);
 
             DrawRectangle(enemy.x + 360, enemy.y + 100, 70, 20, GRAY);
-            DrawRectangle(enemy.x + 315, enemy.y + 100, (130 * enemy.EnemyHealth) / 100, 22, GREEN);
+            DrawRectangle(enemy.x + 315, enemy.y + 100, (130 * enemy.EnemyHealth) / MAX_HEALTH_POINTS, 22, GREEN);
             DrawTextEx(font, to_string(enemy.EnemyHealth).c_str(), Vector2{ enemy.x + 362, enemy.y + 98 }, 25, 0, BLACK);
+
+            DrawTextEx(font, question.c_str(), Vector2{200, 280}, 38, 1, WHITE);
         }
 
         else if (!collision) {
-            if (IsKeyDown('D')) player.x += 25;
-            if (IsKeyDown('A')) player.x -= 3;
+            if (IsKeyDown('D')) player.x += 3.0f;
+            if (IsKeyDown('A')) player.x -= 3.0f;
         }
 
 
