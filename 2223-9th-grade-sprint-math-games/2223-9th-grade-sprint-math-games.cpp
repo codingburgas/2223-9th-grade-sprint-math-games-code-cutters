@@ -1,6 +1,8 @@
-#include "raylib.h"
+#include "raylib.h" //raylib setup
 #include <iostream>
 #include <string>
+#include <stdlib.h> //s.rand rand
+#include <time.h> // time
 
 using namespace std;
 
@@ -14,14 +16,15 @@ typedef struct Enemy {
     float x;
     float y;
     int EnemyHealth;
+    bool isAlive;
 }Enemy;
 
-void randomise(int number1, int number2) {
-    number1 = GetRandomValue(1, 15);
-    number2 = GetRandomValue(1, 15);
+int IntegerCheck(int num2) {
+    int num1 = GetRandomValue(1, 5) * pow(2, num2);
+    return num1;
 }
 
-static int MAX_HEALTH_POINTS = 100;
+
 
 int main()
 {
@@ -33,6 +36,11 @@ int main()
     static Player player;
     static Enemy enemy;
 
+    player.Health = 100;
+    enemy.EnemyHealth = 100;
+    bool flag = false;
+    enemy.isAlive = true;
+
     player.x = -100;
     player.y = 340;
     enemy.x = 310;
@@ -41,12 +49,9 @@ int main()
     bool collision = false;
     bool HasHit = false;
 
-    int number_1 = GetRandomValue(1, 15);
-    int number_2 = GetRandomValue(1, 15);
 
-    string question = "What's " + to_string(number_1) + " << " + to_string(number_2) + "?";
-    string buttonPress = "Press K to type. To submit press ENTER";
-    string answer;
+    int input_number = 564386;
+    string Answer = "Your answer: " + to_string(input_number);
 
     InitWindow(screenWidth, screenHeight, "CodeCutters");
 
@@ -59,54 +64,96 @@ int main()
     static Texture2D player1 = LoadTexture("resources/character1.png");
     static Texture2D enemy1 = LoadTexture("resources/enemy.png");
 
-    
-    
+    int value_2 = GetRandomValue(1, 5);
+    int value_1 = IntegerCheck(value_2);
+
 
     SetTargetFPS(60);     // Set our game to run at 60 frames-per-second
 
+
+    Rectangle playerRec = { player.x, player.y, float(player1.width), float(player1.height) };
+    Rectangle enemyRec = { 750, 400, float(enemy1.width), float(enemy1.height) };
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        Rectangle playerRec = { player.x, player.y, float(player1.width), float(player1.height) };
-        Rectangle enemyRec = { 750, 400, float(enemy1.width), float(enemy1.height) };
+        playerRec = { player.x, player.y, float(player1.width), float(player1.height) };
 
-        if (player.x <= -115)
-            player.x = -115;
-        if (player.x >= 715)
-            player.x = 715;
+        if (player.x <= -115.0f)
+            player.x = -115.0f;
+        if (player.x >= 715.0f)
+            player.x = 715.0f;
 
         collision = CheckCollisionRecs(playerRec, enemyRec);
 
+
+
         // Draw
         BeginDrawing();
+        ClearBackground(WHITE);
 
         DrawTexture(texture, screenWidth / 2 - texture.width / 2, screenHeight / 2 - texture.height / 2, WHITE);
-        DrawTexture(player1, player.x, player.y, WHITE);
-        DrawTexture(enemy1, enemy.x, enemy.y, WHITE);
-        
+
+        if (enemy.isAlive) {
+            DrawTexture(player1, player.x, player.y, WHITE);
+            DrawTexture(enemy1, enemy.x, enemy.y, WHITE);
+        }
+
+
 
         if (collision) {
             HasHit = true;
         }
         if (HasHit) {
+
             player.x = 400;
-            player.Health = 100;
-            enemy.EnemyHealth = 100;
 
             DrawRectangle(player.x + 115, player.y + 30, 70, 20, GRAY);
-            DrawRectangle(player.x + 115, player.y + 30, (70 * player.Health) / MAX_HEALTH_POINTS, 20, GREEN);
+            DrawRectangle(player.x + 115, player.y + 30, (70 * player.Health) / 100, 20, GREEN);
             DrawTextEx(font, to_string(player.Health).c_str(), Vector2{ player.x + 135, player.y + 30 }, 20, 0, BLACK);
 
-            DrawRectangle(enemy.x + 360, enemy.y + 100, 70, 20, GRAY);
-            DrawRectangle(enemy.x + 315, enemy.y + 100, (130 * enemy.EnemyHealth) / MAX_HEALTH_POINTS, 22, GREEN);
-            DrawTextEx(font, to_string(enemy.EnemyHealth).c_str(), Vector2{ enemy.x + 362, enemy.y + 98 }, 25, 0, BLACK);
+            DrawRectangle(enemy.x + 315, enemy.y + 100, 130, 20, GRAY);
+            DrawRectangle(enemy.x + 315, enemy.y + 100, (130 * enemy.EnemyHealth) / 100, 20, GREEN);
+            DrawTextEx(font, to_string(enemy.EnemyHealth).c_str(), Vector2{ enemy.x + 365, enemy.y + 98 }, 25, 0, BLACK);
 
-            DrawTextEx(font, question.c_str(), Vector2{ 100, 190 }, 38, 1, WHITE);
-            DrawTextEx(font, buttonPress.c_str(), Vector2{ 70, 150 }, 35, 1, WHITE);
-            DrawTextEx(font, answer.c_str(), Vector2{ 120, 210 }, 40, 1, WHITE);
+            string text = "What is " + to_string(value_1) + " >> " + to_string(value_2) + "?";
 
-            if (IsKeyPressed('K')) {
-                cin >> answer;
+            DrawText(text.c_str(), 220, 220, 38, WHITE);
+
+
+            if (IsKeyPressed('R')) {
+                cin >> input_number;
+                flag = false;
+            }
+            if (input_number != 564386) {
+                Answer = "Your answer: " + to_string(input_number);
+                DrawText(Answer.c_str(), 220, 250, 38, WHITE);
+            }
+            if (input_number == (value_1 >> value_2) && flag == false) {
+                enemy.EnemyHealth -= 20;
+                flag = true;
+
+                value_2 = GetRandomValue(1, 5);
+                value_1 = IntegerCheck(value_2);
+            }
+            else if (flag == false && input_number != 564386) {
+                player.Health -= 20;
+                flag = true;
+
+                value_2 = GetRandomValue(1, 5);
+                value_1 = IntegerCheck(value_2);
+            }
+
+            if (enemy.EnemyHealth == 0) {
+                UnloadTexture(enemy1);
+                if (player.Health != 100) {
+                    player.Health += 20; //Heals after a level
+                }
+                HasHit = false;
+            }
+            if (player.Health == 0) {
+                UnloadTexture(player1);
+                HasHit = false;
+                CloseWindow();
             }
         }
 
