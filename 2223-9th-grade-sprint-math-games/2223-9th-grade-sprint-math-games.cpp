@@ -68,6 +68,7 @@ int main()
     static Texture2D player1 = LoadTexture("resources/character1.png");
     static Texture2D enemy1 = LoadTexture("resources/enemy.png");
     static Texture2D list = LoadTexture("resources/scroll.png");
+    static Texture2D enemy2 = LoadTexture("resources/enemy2.png");
 
     int value_2 = GetRandomValue(1, 5);
     int value_1 = IntegerCheck(value_2);
@@ -78,20 +79,34 @@ int main()
 
     Rectangle playerRec = { player.x, player.y, float(player1.width), float(player1.height) };
     Rectangle enemyRec = { 750, 400, float(enemy1.width), float(enemy1.height) };
+    Rectangle enemy2Rec = { 650, 320, float(enemy2.width), float(enemy2.height) };
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+        if (player.x <= -115.0f)
+            player.x = -115.0f;
+        if (player.x >= 715.0f) {
+            player.x = -115.0f;
+            loopcounter++;
+            enemy.isAlive = true;
+        }
+        
         collision = false;
 
         if (enemy.isAlive) {
             playerRec = { player.x, player.y, float(player1.width), float(player1.height) };
-            collision = CheckCollisionRecs(playerRec, enemyRec);
+            if (loopcounter == 1) {
+                collision = CheckCollisionRecs(playerRec, enemyRec);
+            }
+            else {
+                collision = CheckCollisionRecs(playerRec, enemy2Rec);
+            }
+            
         }
 
-        if (player.x <= -115.0f)
-            player.x = -115.0f;
-        if (player.x >= 715.0f)
-            player.x = -115.0f;
+        
+            
+            
 
 
         // Draw
@@ -100,11 +115,18 @@ int main()
 
         DrawTexture(texture, screenWidth / 2 - texture.width / 2, screenHeight / 2 - texture.height / 2, WHITE);
         DrawTexture(player1, player.x, player.y, WHITE);
+        
         if (enemy.isAlive == true && loopcounter == 1) {
             DrawTexture(enemy1, enemy.x, enemy.y, WHITE);
         }
+        if (enemy.isAlive == true && loopcounter == 2) {
+            enemy.x = 650;
+            enemy.y = 320;
+            DrawTexture(enemy2, enemy.x, enemy.y, WHITE);
 
-
+        }
+       
+            
 
         if (collision) {
             HasHit = true;
