@@ -25,6 +25,21 @@ typedef struct Enemy {
 //    }
 //}
 
+int decimalToBinary(int value_1) {
+    int binary_number = 0;
+    int remainder, i = 1;
+
+    // Until the value of n becomes 0.
+    while (value_1 != 0) {
+        remainder = value_1 % 2;
+        binary_number += remainder * i;
+        i = i * 10;
+        value_1 = value_1 / 2;
+    }
+
+    return binary_number;
+}
+
 int IntegerCheck(int num2) {
     int num1 = GetRandomValue(1, 5) * pow(2, num2);
     return num1;
@@ -61,7 +76,7 @@ void ShiftRight(int& number, int& value_1, int& value_2, bool& flag, int& shifte
     }
 }
 
-void ShiftLeft(int number, int value_1, int value_2, bool flag, int shifter, int health1, int health2) {
+void ShiftLeft(int& number, int& value_1, int& value_2, bool& flag, int& shifter, int& health1, int& health2) {
     if (number == (value_1 << value_2) && flag == false) {
         health2 -= 20;
         flag = true;
@@ -78,6 +93,55 @@ void ShiftLeft(int number, int value_1, int value_2, bool flag, int shifter, int
         value_1 = GetRandomValue(10, 30);
     }
 }
+
+void And(int& number, int& value_1, int& value_2, bool& flag, int& shifter, int& health1, int& health2) {
+    if (number == (value_1 & value_2) && flag == false) {
+        health2 -= 20;
+        flag = true;
+
+        value_2 = GetRandomValue(1, 15);
+        value_1 = GetRandomValue(1, 15);
+
+        value_2 = decimalToBinary(value_2);
+        value_1 = decimalToBinary(value_1);
+        shifter++;
+    }
+    if (flag == false && number != 564386) {
+        health1 -= 20;
+        flag = true;
+
+        value_2 = GetRandomValue(1, 15);
+        value_1 = GetRandomValue(1, 15);
+
+        value_2 = decimalToBinary(value_2);
+        value_1 = decimalToBinary(value_1);
+    }
+}
+
+void Or(int& number, int& value_1, int& value_2, bool& flag, int& shifter, int& health1, int& health2) {
+    if (number == (value_1 | value_2) && flag == false) {
+        health2 -= 20;
+        flag = true;
+
+        value_2 = GetRandomValue(1, 15);
+        value_1 = GetRandomValue(1, 15);
+
+        value_2 = decimalToBinary(value_2);
+        value_1 = decimalToBinary(value_1);
+        shifter++;
+    }
+    if (flag == false && number != 564386) {
+        health1 -= 20;
+        flag = true;
+
+        value_2 = GetRandomValue(1, 15);
+        value_1 = GetRandomValue(1, 15);
+
+        value_2 = decimalToBinary(value_2);
+        value_1 = decimalToBinary(value_1);
+    }
+}
+
 
 void MoveAnimationLeft(float& timer, int& frame, int maxFrames, float frameWidth, Texture2D Run, float& x1, float& y1) {
     timer += GetFrameTime();
@@ -101,7 +165,7 @@ void MoveAnimationRight(float& timer, int& frame, int maxFrames, float frameWidt
     DrawTextureRec(Run, Rectangle{ (frameWidth * frame), 0, frameWidth, (float)Run.width }, Vector2{ x1, y1 }, RAYWHITE);
 }
 
-int main()
+int bebe()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -138,7 +202,7 @@ int main()
 
     Font font = LoadFont("resources/TiltWarp-Regular-VariableFont_XROT,YROT.ttf");
 
-    static Image image = LoadImage("resources/background.png");
+    static Image image = LoadImage("resources/background.jpg");
     static Texture2D texture = LoadTextureFromImage(image);          // Image converted to texture, GPU memory (VRAM)
     UnloadImage(image);   // Once image has been converted to texture and uploaded to VRAM, it can be unloaded from RAM
 
@@ -164,7 +228,7 @@ int main()
 
 
     Rectangle playerRec = { player.x, player.y, float(player1.width / 8), float(player1.height)  };
-    Rectangle enemyRec = { 750, 400, float(enemy1.width), float(enemy1.height) };
+    Rectangle enemyRec = { 600, 400, float(enemy1.width), float(enemy1.height) };
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -180,7 +244,7 @@ int main()
         }
  
         if (loopcounter == 2) {
-            enemyRec = { 780, 280, float(enemy2.width), float(enemy2.height) };
+            enemyRec = { 650, 280, float(enemy2.width), float(enemy2.height) };
         }
 
         collision = false;
@@ -225,20 +289,13 @@ int main()
         if (collision) {
             HasHit = true;
         }
-        if (HasHit) {
+        if (HasHit == true && loopcounter == 1) {
             MoveAnimationLeft(timer, framePlayer, maxFramesPlayer, frameWidthPlayer, player1, player.x, player.y);
             player.x = 400;
-            if (loopcounter == 1) {
-                DrawHealthBarPlayer(player.x, player.y, player.Health, font);
-                DrawHealthBarsEnemy(enemy.x, enemy.y + 180, enemy.EnemyHealth, font, 0, 0);
-            }
-            else {
-                DrawHealthBarPlayer(player.x, player.y, player.Health, font);
-                DrawHealthBarsEnemy(enemy.x + 10, enemy.y - 20, enemy.EnemyHealth, font, 0, 0);
-                cout << enemy.EnemyHealth;
-            }
-            
 
+            DrawHealthBarPlayer(player.x, player.y, player.Health, font);
+            DrawHealthBarsEnemy(enemy.x, enemy.y + 180, enemy.EnemyHealth, font, 0, 0);
+            
             if (shifter % 2 != 0) {
                 text = "What is " + to_string(value_1) + " >> " + to_string(value_2) + "?";
             }
@@ -280,7 +337,47 @@ int main()
                 shifter = 0;
                 enemy.EnemyHealth = 100;
                 ClearBackground(RAYWHITE);
+                shifter = 1;
             }
+        }
+        
+        else if (HasHit == true && loopcounter == 2) {
+            MoveAnimationLeft(timer, framePlayer, maxFramesPlayer, frameWidthPlayer, player1, player.x, player.y);
+            player.x = 400;
+
+            if (shifter % 2 != 0) {
+                And(input_number, value_1, value_2, flag, shifter, player.Health, enemy.EnemyHealth);
+            }
+            else {
+                Or(input_number, value_1, value_2, flag, shifter, player.Health, enemy.EnemyHealth);
+            }
+            DrawHealthBarPlayer(player.x, player.y, player.Health, font);
+            DrawHealthBarsEnemy(enemy.x + 10, enemy.y - 20, enemy.EnemyHealth, font, 0, 0);
+
+            if(shifter % 2 != 0) {
+                text = "What is " + to_string(value_1) + " & " + to_string(value_2) + "?";
+            }
+            else{
+                text = "What is " + to_string(value_1) + " | " + to_string(value_2) + "?";
+            }
+
+            DrawTexture(list, 160, 100, RAYWHITE);
+            DrawText(text.c_str(), 220, 175, 31, BLACK);
+
+
+            if (IsKeyPressed('R')) {
+                cin >> input_number;
+                flag = false;
+            }
+            if (IsKeyPressed('X')) {
+                enemy.EnemyHealth -= 100;
+            }
+            if (input_number != 564386) {
+                Answer = "Your answer: " + to_string(input_number);
+                DrawText(Answer.c_str(), 220, 210, 32, BLACK);
+            }
+
+
             if (enemy.EnemyHealth == 0 && loopcounter == 2) {
                 UnloadTexture(enemy2);
                 if (player.Health != 100) {
@@ -299,8 +396,8 @@ int main()
                 CloseWindow();
             }
         }
-
-        else if (!collision) {
+        
+        if (!collision) {
             if (IsKeyDown('D')) {
                 player.x += 3.0f;
                 MoveAnimationLeft(timer, framePlayer, maxFramesPlayer, frameWidthPlayer, player1, player.x, player.y);
