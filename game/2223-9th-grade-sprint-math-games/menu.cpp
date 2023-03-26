@@ -1,9 +1,10 @@
 #include "raylib.h"
-#include <iostream>
-#include <string>
+#include "menu.h"
+
 
 using namespace std;
 
+//Checks whether a button is clicked
 bool ChooseRectangle(Rectangle rectangle) {
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
         if (CheckCollisionPointRec(GetMousePosition(), rectangle)) {
@@ -12,7 +13,7 @@ bool ChooseRectangle(Rectangle rectangle) {
     }
 }
 
-int menu()
+int main()
 {
     // Initialization
     const int screenWidth = 899;
@@ -32,12 +33,13 @@ int menu()
     Texture2D button2 = LoadTexture("resources/Quitbutton.png");
     Texture2D portal = LoadTexture("resources/protal.png");
 
-    bool played = false;
+    bool played = true;
 
     Sound music = LoadSound("resources/music.mp3");
 
     Rectangle PlayButton = { screenWidth / 2 - 120, screenHeight / 2 - 10, 250, 100 };
     Rectangle QuitButton = { screenWidth / 2 - 125, screenHeight / 2 + 120, 250, 100 };
+    PlaySound(music);
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -47,17 +49,20 @@ int menu()
         DrawTexture(GameName, -80, -80, WHITE);
         DrawTexture(button1, screenWidth / 2 - 120, screenHeight / 2 - 10, WHITE);
         DrawTexture(button2, screenWidth / 2 - 125, screenHeight / 2 + 120, WHITE);
+        
         if (IsKeyPressed(KEY_SPACE) == true && played == false) {
             PlaySound(music);
             played = true;
-            cout << played;
         }
         else if (IsKeyPressed(KEY_SPACE) == true && played == true){
             StopSound(music);
             played = false;
         }
 
-
+        if (ChooseRectangle(PlayButton)) {
+            CloseAudioDevice();
+            game();
+        }
 
         if (ChooseRectangle(QuitButton)) {
             EndDrawing();

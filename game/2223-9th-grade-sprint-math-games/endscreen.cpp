@@ -1,18 +1,16 @@
 #include "raylib.h"
-#include <iostream>
-#include <string>
+#include "endscreen.h"
 
 
 using namespace std;
 
-
-int main()
+//after the game has come to an end, this screen shows up
+void endscreen(bool YouWin, bool YouLose)
 {
     // Initialization
     const int screenWidth = 899;
     const int screenHeight = 580;
 
-    InitWindow(screenWidth, screenHeight, "Binary Battle");
     InitAudioDevice();
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
@@ -25,18 +23,27 @@ int main()
     Texture2D YouWinButton = LoadTexture("resources/YouWin.png");
     Texture2D YouLoseButton = LoadTexture("resources/YouLose.png");
 
-    bool played = false;
-
-    bool YouWin = false;
-    bool YouLose = true;
-
     Sound music = LoadSound("resources/music.mp3");
+    bool played = true;
 
-    Rectangle QuitButton = { screenWidth / 2 - 125, screenHeight / 2 + 120, 250, 100 };
+    Rectangle QuitButton = { screenWidth / 2 - 125, screenHeight / 2 + 40, 250, 100 };
+    PlaySound(music);
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (true)  
     {
 
+        if (IsKeyPressed(KEY_SPACE) == true && played == false) {
+            PlaySound(music);
+            played = true;
+        }
+        else if (IsKeyPressed(KEY_SPACE) == true && played == true) {
+            StopSound(music);
+            played = false;
+        }
+        if (WindowShouldClose()) {
+            EndDrawing();
+            return;
+        }
         BeginDrawing();
         DrawTexture(background, screenWidth / 2 - background.width / 2, screenHeight / 2 - background.height / 2, RAYWHITE);
         if (YouWin) {
@@ -45,9 +52,16 @@ int main()
         else if (YouLose) {
             DrawTexture(YouLoseButton, -90, 10, RAYWHITE);
         }
-        
+
         DrawTexture(Quit, screenWidth / 2 - 125, screenHeight / 2 + 40, RAYWHITE);
 
+        //
+        if (ChooseRectangle(QuitButton)) {
+            EndDrawing();
+            CloseWindow();
+            CloseAudioDevice();
+            return;
+        }
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -55,9 +69,7 @@ int main()
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
     CloseAudioDevice();
     //--------------------------------------------------------------------------------------
 
-    return 0;
 }
