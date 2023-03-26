@@ -40,7 +40,7 @@ You can start the game by going to the game folder and open "2223-9th-grade-spri
 - <img src="https://logos-world.net/wp-content/uploads/2021/04/Microsoft-Teams-Logo.png" width="20"> Teams
 - <img src="https://seeklogo.com/images/F/font-awesome-logo-3010FE2434-seeklogo.com.png" width="20"> Font Awesome
 ---
-## Textures:
-- <img src="https://commons.wikimedia.org/wiki/File:Pinterest-logo.png](https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" width="20"> Pintrest
-- <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.crunchbase.com%2Forganization%2Fopengameart&psig=AOvVaw3yeRqXSSjVtl5Qe2_slivg&ust=1679943068145000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCLCqyuCh-v0CFQAAAAAdAAAAABAE" width="20"> opengameart
+## Textures (Avatars/Backgrounds/Buttons):
+- Pintrest
+- opengameart
 ---
