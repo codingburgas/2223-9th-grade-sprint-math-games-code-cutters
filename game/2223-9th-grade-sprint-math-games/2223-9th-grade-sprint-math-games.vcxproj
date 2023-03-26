@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="endscreen.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="menu.cpp" />
   </ItemGroup>

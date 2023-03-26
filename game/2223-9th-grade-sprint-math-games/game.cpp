@@ -157,7 +157,7 @@ void MoveAnimationRight(float& timer, int& frame, int maxFrames, float frameWidt
     DrawTextureRec(Run, Rectangle{ (frameWidth * frame), 0, frameWidth, (float)Run.width }, Vector2{ x1, y1 }, RAYWHITE);
 }
 
-int main()
+int bbbb()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -169,13 +169,16 @@ int main()
 
     player.Health = 100;
     enemy.EnemyHealth = 100;
+    enemy.isAlive = true;
 
     bool flag = false;
     bool playerspawn = false;
     bool CharacterFacing = false;
-    enemy.isAlive = true;
+    bool IsFinalBossKilled = false;
     bool collision = false;
     bool HasHit = false;
+    bool YouWin = false;
+    bool YouLose = false;
 
     player.x = 0;
     player.y = 145;
@@ -212,7 +215,7 @@ int main()
     float frameWidthPlayer = (float)(player1.width / 8);
     float frameWidthEnemy = (float)(enemy1.width / 8)  + 2;
     float frameWidthEnemy2 = (float)(enemy2.width / 8  + 6);
-    float frameWidthPortal = (float)(portal.width / 9);
+    float frameWidthPortal = (float)(portal.width / 9 - 3);
     int maxFramesPlayer = (int)(player1.width / (int)frameWidthPlayer);
     int maxFramesEnemy = (int)(enemy1.width / (int)frameWidthEnemy);
     int maxFramesEnemy2 = (int)(enemy2.width / (int)frameWidthEnemy2);
@@ -349,6 +352,11 @@ int main()
                 ClearBackground(RAYWHITE);
                 shifter = 1;
             }
+            if (player.Health <= 0) {
+                UnloadTexture(player1);
+                HasHit = false;
+                YouLose = true;
+            }
         }
         
         else if (HasHit == true && loopcounter == 2) {
@@ -394,14 +402,29 @@ int main()
                 collision = false;
                 enemy.isAlive = false;
                 shifter = 0;
+                IsFinalBossKilled = true;
+                
             }
-            if (player.Health == 0) {
+            if (player.Health <= 0) {
                 UnloadTexture(player1);
                 HasHit = false;
-                CloseWindow();
+                YouLose = true;
             }
         }
         
+        if (IsFinalBossKilled) {
+            timer2 += GetFrameTime();
+            if (timer2 >= 0.23f) {
+                timer2 = 0.0f;
+                framePortal += 1;
+            }
+            framePortal = framePortal % maxFramesPortal;
+            DrawTextureRec(portal, Rectangle{ (frameWidthPortal * framePortal), 0, frameWidthPortal, (float)portal.width }, Vector2{ 525 , 110 }, RAYWHITE);
+            if (player.x >= 500) {
+                YouWin = true;
+            }
+        }
+
         if (!HasHit) {
             if (IsKeyDown('D')) {
                 player.x += 3.0f;

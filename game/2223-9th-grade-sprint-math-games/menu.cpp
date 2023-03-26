@@ -12,7 +12,7 @@ bool ChooseRectangle(Rectangle rectangle) {
     }
 }
 
-int bebe()
+int menu()
 {
     // Initialization
     const int screenWidth = 899;
@@ -30,6 +30,7 @@ int bebe()
     Texture2D GameName = LoadTexture("resources/GameName.png");
     Texture2D button1 = LoadTexture("resources/Playbutton.png");
     Texture2D button2 = LoadTexture("resources/Quitbutton.png");
+    Texture2D portal = LoadTexture("resources/protal.png");
 
     bool played = false;
 
@@ -40,9 +41,12 @@ int bebe()
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        ClearBackground(RAYWHITE);
+        
         BeginDrawing();
-
+        DrawTexture(background, screenWidth / 2 - background.width / 2, screenHeight / 2 - background.height / 2, WHITE);
+        DrawTexture(GameName, -80, -80, WHITE);
+        DrawTexture(button1, screenWidth / 2 - 120, screenHeight / 2 - 10, WHITE);
+        DrawTexture(button2, screenWidth / 2 - 125, screenHeight / 2 + 120, WHITE);
         if (IsKeyPressed(KEY_SPACE) == true && played == false) {
             PlaySound(music);
             played = true;
@@ -53,11 +57,7 @@ int bebe()
             played = false;
         }
 
-        DrawTexture(background, screenWidth / 2 - background.width / 2, screenHeight / 2 - background.height / 2, WHITE);
 
-        DrawTexture(GameName, -80, -80, WHITE);
-        DrawTexture(button1, screenWidth / 2 - 120 , screenHeight / 2 - 10, WHITE);
-        DrawTexture(button2, screenWidth / 2 - 125, screenHeight / 2 + 120, WHITE);
 
         if (ChooseRectangle(QuitButton)) {
             EndDrawing();
