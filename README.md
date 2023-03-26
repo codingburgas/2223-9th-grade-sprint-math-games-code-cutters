@@ -41,5 +41,5 @@ You can start the game by going to the game folder and open "2223-9th-grade-spri
 - <img src="https://seeklogo.com/images/F/font-awesome-logo-3010FE2434-seeklogo.com.png" width="20"> Font Awesome
 ---
 ## Textures:
-- <img src="https://commons.wikimedia.org/wiki/File:Pinterest-logo.png" width="20"> Pintrest
+- <img src="https://commons.wikimedia.org/wiki/File:Pinterest-logo.png](https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" width="20"> Pintrest
 ---
