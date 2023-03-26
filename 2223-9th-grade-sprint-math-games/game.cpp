@@ -17,14 +17,6 @@ typedef struct Enemy {
     bool isAlive;
 }Enemy;
 
-//void ToggleFullscreenWindow() {
-//    if (IsKeyPressed('F')) {
-//        int MonitorSize = GetCurrentMonitor();
-//        SetWindowSize(GetMonitorWidth(MonitorSize), GetMonitorHeight(MonitorSize));
-//        ToggleFullscreen();
-//    }
-//}
-
 int decimalToBinary(int value_1) {
     int binary_number = 0;
     int remainder, i = 1;
@@ -52,7 +44,7 @@ void DrawHealthBarPlayer(float x1, float y1, int health1, Font font) {
 }
 
 void DrawHealthBarsEnemy( float x2,  float y2,  int health2, Font font, int bonuscordsX, int bonuscordsY) {
-    DrawRectangle(x2 + bonuscordsX, y2 + bonuscordsY, 130, 23, GRAY); //315 100
+    DrawRectangle(x2 + bonuscordsX, y2 + bonuscordsY, 130, 23, GRAY); 
     DrawRectangle(x2 + bonuscordsX, y2 + bonuscordsY, (130 * health2) / 100, 23, GREEN);
     DrawTextEx(font, to_string(health2).c_str(), Vector2{ x2 + bonuscordsX + 50, y2 + bonuscordsY }, 25, 0, BLACK);
 }
@@ -165,7 +157,7 @@ void MoveAnimationRight(float& timer, int& frame, int maxFrames, float frameWidt
     DrawTextureRec(Run, Rectangle{ (frameWidth * frame), 0, frameWidth, (float)Run.width }, Vector2{ x1, y1 }, RAYWHITE);
 }
 
-int bebe()
+int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -186,9 +178,9 @@ int bebe()
     bool HasHit = false;
 
     player.x = 0;
-    player.y = 140;
-    enemy.x = 600;
-    enemy.y = 145;
+    player.y = 145;
+    enemy.x = 480;
+    enemy.y = 160;
 
     int shifter = 1;
     int loopcounter = 1;
@@ -202,7 +194,7 @@ int bebe()
 
     Font font = LoadFont("resources/TiltWarp-Regular-VariableFont_XROT,YROT.ttf");
 
-    static Image image = LoadImage("resources/background.jpg");
+    static Image image = LoadImage("resources/background.png");
     static Texture2D texture = LoadTextureFromImage(image);          // Image converted to texture, GPU memory (VRAM)
     UnloadImage(image);   // Once image has been converted to texture and uploaded to VRAM, it can be unloaded from RAM
 
@@ -210,41 +202,51 @@ int bebe()
     static Texture2D playerBackwards = LoadTexture("resources/runB.png");
     static Texture2D enemy1 = LoadTexture("resources/enemy.png");
     static Texture2D list = LoadTexture("resources/scroll.png");
+    static Texture2D portal = LoadTexture("resources/protal.png");
     static Texture2D enemy2 = LoadTexture("resources/enemy2.png");
+
 
     int value_2 = GetRandomValue(1, 5);
     int value_1 = IntegerCheck(value_2);
 
     float frameWidthPlayer = (float)(player1.width / 8);
     float frameWidthEnemy = (float)(enemy1.width / 8)  + 2;
+    float frameWidthEnemy2 = (float)(enemy2.width / 8  + 6);
+    float frameWidthPortal = (float)(portal.width / 9);
     int maxFramesPlayer = (int)(player1.width / (int)frameWidthPlayer);
     int maxFramesEnemy = (int)(enemy1.width / (int)frameWidthEnemy);
+    int maxFramesEnemy2 = (int)(enemy2.width / (int)frameWidthEnemy2);
+    int maxFramesPortal = (int)(portal.width / (int)frameWidthPortal);
     float timer = 0.0f;
+    float timer2 = 0.0f;
     int framePlayer = 0;
     int frameEnemy = 0;
+    int frameEnemy2 = 0;
+    int framePortal = 0;
     
 
     SetTargetFPS(60);     // Set our game to run at 60 frames-per-second
 
 
     Rectangle playerRec = { player.x, player.y, float(player1.width / 8), float(player1.height)  };
-    Rectangle enemyRec = { 600, 400, float(enemy1.width), float(enemy1.height) };
+    Rectangle enemyRec = { 520, 200, float(enemy1.width), float(enemy1.height) };
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        
-
         if (player.x <= -115.0f)
             player.x = -115.0f;
-        if (player.x >= 715.0f) {
+        else if (player.x >= 715.0f) {
             player.x = -115.0f;
             loopcounter++;
             enemy.isAlive = true;
             enemy.EnemyHealth = 100;
         }
+        else if (player.x >= 715.0f && loopcounter == 3) {
+
+        }
  
         if (loopcounter == 2) {
-            enemyRec = { 650, 280, float(enemy2.width), float(enemy2.height) };
+            enemyRec = { 380, 280, float(enemy2.width), float(enemy2.height) };
         }
 
         collision = false;
@@ -282,7 +284,13 @@ int bebe()
         if (enemy.isAlive == true && loopcounter == 2) {
             enemy.x = 650;
             enemy.y = 320;
-            DrawTexture(enemy2, enemy.x, enemy.y, WHITE);
+            timer2 += GetFrameTime();
+            if (timer2 >= 0.23f) {
+                timer2 = 0.0f;
+                frameEnemy2 += 1;
+            }
+            frameEnemy2 = frameEnemy2 % maxFramesEnemy2;
+            DrawTextureRec(enemy2, Rectangle{ (frameWidthEnemy2 * frameEnemy2), 0, frameWidthEnemy2, (float)player1.width }, Vector2{ 380 , -200}, RAYWHITE);
 
         }
        
@@ -291,7 +299,7 @@ int bebe()
         }
         if (HasHit == true && loopcounter == 1) {
             MoveAnimationLeft(timer, framePlayer, maxFramesPlayer, frameWidthPlayer, player1, player.x, player.y);
-            player.x = 400;
+            player.x = 315;
 
             DrawHealthBarPlayer(player.x, player.y, player.Health, font);
             DrawHealthBarsEnemy(enemy.x, enemy.y + 180, enemy.EnemyHealth, font, 0, 0);
@@ -303,29 +311,31 @@ int bebe()
                 text = "What is " + to_string(value_1) + " << " + to_string(value_2) + "?";
             }
 
-            DrawTexture(list, 160, 100, RAYWHITE);
-            DrawText(text.c_str(), 220, 175, 34, BLACK);
+            DrawTexture(list, 230, 20, RAYWHITE);
+            DrawText(text.c_str(), 290, 95, 34, BLACK);
 
 
             if (IsKeyPressed('R')) {
                 cin >> input_number;
                 flag = false;
             }
+
             if (IsKeyPressed('X')) {
                 enemy.EnemyHealth -= 100;
             }
             if (input_number != 564386) {
                 Answer = "Your answer: " + to_string(input_number);
-                DrawText(Answer.c_str(), 220, 210, 32, BLACK);
+                DrawText(Answer.c_str(), 290, 130, 32, BLACK);
             }
             if (shifter % 2 != 0) {
                 ShiftRight(input_number, value_1, value_2, flag, shifter, player.Health, enemy.EnemyHealth);
+                
             }
             else {
                 ShiftLeft(input_number, value_1, value_2, flag, shifter, player.Health, enemy.EnemyHealth);
 
             }
-            if (enemy.EnemyHealth == 0 && loopcounter == 1) {
+            if (enemy.EnemyHealth <= 0 && loopcounter == 1) {
                 UnloadTexture(enemy1);
                 if (player.Health != 100) {
                     player.Health += 20; //Heals after a level
@@ -343,7 +353,7 @@ int bebe()
         
         else if (HasHit == true && loopcounter == 2) {
             MoveAnimationLeft(timer, framePlayer, maxFramesPlayer, frameWidthPlayer, player1, player.x, player.y);
-            player.x = 400;
+            player.x = 220;
 
             if (shifter % 2 != 0) {
                 And(input_number, value_1, value_2, flag, shifter, player.Health, enemy.EnemyHealth);
@@ -352,7 +362,7 @@ int bebe()
                 Or(input_number, value_1, value_2, flag, shifter, player.Health, enemy.EnemyHealth);
             }
             DrawHealthBarPlayer(player.x, player.y, player.Health, font);
-            DrawHealthBarsEnemy(enemy.x + 10, enemy.y - 20, enemy.EnemyHealth, font, 0, 0);
+            DrawHealthBarsEnemy(enemy.x - 110, enemy.y - 45, enemy.EnemyHealth, font, 0, 0);
 
             if(shifter % 2 != 0) {
                 text = "What is " + to_string(value_1) + " & " + to_string(value_2) + "?";
@@ -361,9 +371,8 @@ int bebe()
                 text = "What is " + to_string(value_1) + " | " + to_string(value_2) + "?";
             }
 
-            DrawTexture(list, 160, 100, RAYWHITE);
-            DrawText(text.c_str(), 220, 175, 31, BLACK);
-
+            DrawTexture(list, 230, 20, RAYWHITE);
+            DrawText(text.c_str(), 290, 95, 34, BLACK);
 
             if (IsKeyPressed('R')) {
                 cin >> input_number;
@@ -374,21 +383,17 @@ int bebe()
             }
             if (input_number != 564386) {
                 Answer = "Your answer: " + to_string(input_number);
-                DrawText(Answer.c_str(), 220, 210, 32, BLACK);
+                DrawText(Answer.c_str(), 290, 130, 32, BLACK);
             }
 
 
-            if (enemy.EnemyHealth == 0 && loopcounter == 2) {
+            if (enemy.EnemyHealth <= 0 && loopcounter == 2) {
                 UnloadTexture(enemy2);
-                if (player.Health != 100) {
-                    player.Health += 20; //Heals after a level
-                }
+
                 HasHit = false;
                 collision = false;
                 enemy.isAlive = false;
-
                 shifter = 0;
-                ClearBackground(RAYWHITE);
             }
             if (player.Health == 0) {
                 UnloadTexture(player1);
@@ -397,7 +402,7 @@ int bebe()
             }
         }
         
-        if (!collision) {
+        if (!HasHit) {
             if (IsKeyDown('D')) {
                 player.x += 3.0f;
                 MoveAnimationLeft(timer, framePlayer, maxFramesPlayer, frameWidthPlayer, player1, player.x, player.y);
