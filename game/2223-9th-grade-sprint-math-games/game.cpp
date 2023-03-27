@@ -93,7 +93,6 @@ void ShiftLeft(int& number, int& value_1, int& value_2, bool& flag, int& shifter
 //Bitwise operation (and)
 void And(int& number, int& value_1, int& value_2, bool& flag, int& shifter, int& health1, int& health2) {
     int final_result = decimalToBinary((value_1 & value_2));
-    cout << final_result << endl;
     if (number == final_result && flag == false) {
         health2 -= 20;
         flag = true;
@@ -116,7 +115,6 @@ void And(int& number, int& value_1, int& value_2, bool& flag, int& shifter, int&
 //Bitwise operation (or)
 void Or(int& number, int& value_1, int& value_2, bool& flag, int& shifter, int& health1, int& health2) {
     int final_result = decimalToBinary((value_1 | value_2));
-    cout << final_result << endl;
     if (number == final_result && flag == false) {
         health2 -= 20;
         flag = true;
@@ -291,7 +289,9 @@ int game()
             //Draws the health bars
             DrawHealthBarPlayer(player.x, player.y, player.Health, font);
             DrawHealthBarsEnemy(enemy.x, enemy.y + 180, enemy.EnemyHealth, font, 0, 0);
-            
+            DrawTextEx(font, "Press R to input in console", Vector2{ 0, 10 }, 28, 1, WHITE);
+            DrawTextEx(font, "Level 1 - >> / <<", Vector2{ 720, 10 }, 28, 1, WHITE);
+
             //a shifter is alternating and if its an even number the operation will be (Shift right) or if its odd the operation will be (Shift left) it will show it on the list
             if (shifter % 2 != 0) {
                 text = "What is " + to_string(value_1) + " >> " + to_string(value_2) + "?";
@@ -359,6 +359,8 @@ int game()
             //Draws health bars (made out of rectangles)
             DrawHealthBarPlayer(player.x, player.y, player.Health, font);
             DrawHealthBarsEnemy(enemy.x - 110, enemy.y - 45, enemy.EnemyHealth, font, 0, 0);
+            DrawTextEx(font, "Press R to input in console", Vector2{ 0, 10 }, 28, 1, WHITE);
+            DrawTextEx(font, "Level 2 - & / |", Vector2{ 720, 10 }, 28, 1, WHITE);
 
             //Change the numbers so that we dont use the last ones twice
             if (!GenerateNumbers) {
