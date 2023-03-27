@@ -26,7 +26,6 @@ int main()
 
     Font font = LoadFont("resources/TiltWarp-Regular-VariableFont_XROT,YROT.ttf");
 
-    Texture2D testenemy = LoadTexture("resources/enemy2.png");
     Texture2D background = LoadTexture("resources/background2.png");
     Texture2D GameName = LoadTexture("resources/GameName.png");
     Texture2D button1 = LoadTexture("resources/Playbutton.png");

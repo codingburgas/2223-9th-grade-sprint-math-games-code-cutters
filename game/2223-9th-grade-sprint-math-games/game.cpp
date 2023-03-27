@@ -181,10 +181,7 @@ int game()
 
     Font font = LoadFont("resources/TiltWarp-Regular-VariableFont_XROT,YROT.ttf");
 
-    Image image = LoadImage("resources/background.png");
-    Texture2D texture = LoadTextureFromImage(image);          // Image converted to texture, GPU memory (VRAM)
-    UnloadImage(image);   // Once image has been converted to texture and uploaded to VRAM, it can be unloaded from RAM
-
+    Texture2D texture = LoadTexture("resources/background.png");          
     Texture2D player1 = LoadTexture("resources/runA.png");
     Texture2D playerBackwards = LoadTexture("resources/runB.png");
     Texture2D enemy1 = LoadTexture("resources/enemy.png");
